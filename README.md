@@ -5,7 +5,23 @@
 SyncScribe is a full-stack collaborative writing app: multiple users edit the same document at the same time, watch each other's cursors move live, and share documents with fine-grained OWNER / EDITOR / VIEWER roles — all backed by conflict-free CRDT merging and snapshot persistence in PostgreSQL.
 
 [![CI](https://github.com/negar73/syncscribe/actions/workflows/ci.yml/badge.svg)](https://github.com/negar73/syncscribe/actions/workflows/ci.yml)
-[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](./LICENSE)
+
+---
+
+## Demo
+
+No hosted demo yet — the collaboration layer is a separate WebSocket process, and that split is exactly what is worth seeing. Locally it takes about two minutes:
+
+```bash
+docker compose up -d                 # Postgres 16
+npm install                          # generates the Prisma client
+cp .env.example .env                 # set JWT_SECRET to any long random string
+npm run db:push && npm run db:seed   # schema + demo users + welcome document
+npm run dev                          # web app        -> http://localhost:3000
+npm run ws                           # collab server  -> ws://localhost:1234
+```
+
+Sign in as `demo@syncscribe.dev` / `demo1234` and open the seeded **Welcome to SyncScribe** document. Then open a second browser window next to it, sign in as the second demo user `mara@syncscribe.dev` / `demo1234`, and type in one window — edits, remote cursors and presence avatars show up in the other one instantly.
 
 ---
 
@@ -181,7 +197,6 @@ syncscribe/
 ├── docker-compose.yml              # Postgres 16 + healthcheck + named volume
 ├── Dockerfile                      # multi-stage standalone build of the Next.js app
 ├── .env.example
-├── LICENSE                         # MIT
 └── package.json
 ```
 
@@ -198,7 +213,3 @@ Ordered roughly from beginner-friendly to advanced — these are the next featur
 7. **Email invites** — send share invitations by email (magic links or notification digests) instead of only inviting registered users by address.
 
 Contributions welcome — pick a roadmap item and open a PR!
-
-## License
-
-Released under the [MIT License](./LICENSE) — © 2025 Negar Shojaei.
