@@ -1,0 +1,28 @@
+# PostgreSQL 16 for local development.
+#
+#   docker compose up -d      # start
+#   docker compose down       # stop (data lives in the named volume)
+#
+# The credentials match DATABASE_URL in .env.example.
+
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: syncscribe-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: syncscribe
+      POSTGRES_PASSWORD: syncscribe
+      POSTGRES_DB: syncscribe
+    ports:
+      - "5432:5432"
+    volumes:
+      - syncscribe-pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U syncscribe -d syncscribe"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  syncscribe-pgdata:

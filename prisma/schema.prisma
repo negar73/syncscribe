@@ -1,0 +1,76 @@
+// SyncScribe database schema (PostgreSQL).
+//
+// Invariant maintained by the application: every document has exactly one
+// DocumentCollaborator row with role OWNER (created atomically with the
+// document). Permission checks therefore resolve a user's role with a single
+// lookup on the @@unique([documentId, userId]) compound index.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+/// Permission levels for document access.
+enum Role {
+  OWNER
+  EDITOR
+  VIEWER
+}
+
+model User {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  name         String
+  passwordHash String
+  /// Deterministic HSL color (derived from the email at registration) used
+  /// for presence cursors, avatars and collaborator badges.
+  color        String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  ownedDocuments Document[]
+  collaborations DocumentCollaborator[]
+}
+
+model Document {
+  id        String   @id @default(cuid())
+  title     String   @default("Untitled document")
+  ownerId   String
+  owner     User     @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  collaborators DocumentCollaborator[]
+  snapshots     DocumentSnapshot[]
+}
+
+model DocumentCollaborator {
+  documentId String
+  userId     String
+  role       Role     @default(EDITOR)
+  createdAt  DateTime @default(now())
+
+  document Document @relation(fields: [documentId], references: [id], onDelete: Cascade)
+  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([documentId, userId])
+}
+
+/// Binary Yjs state persisted by the WebSocket server every 10 seconds per
+/// active room (and once more when the last participant leaves). Rooms are
+/// hydrated from the newest snapshot when the first user joins.
+model DocumentSnapshot {
+  id         String   @id @default(cuid())
+  documentId String
+  state      Bytes
+  version    Int
+  createdAt  DateTime @default(now())
+
+  document Document @relation(fields: [documentId], references: [id], onDelete: Cascade)
+
+  @@index([documentId, version])
+}
