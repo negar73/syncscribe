@@ -8,7 +8,7 @@ SyncScribe is a full-stack collaborative writing app: multiple users edit the sa
 
 ## Badges
 
-[![CI](https://github.com/negar-shojaei/syncscribe/actions/workflows/ci.yml/badge.svg)](https://github.com/negar-shojaei/syncscribe/actions/workflows/ci.yml)
+[![CI](https://github.com/negar73/syncscribe/actions/workflows/ci.yml/badge.svg)](https://github.com/negar73/syncscribe/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](./LICENSE)
 [![Next.js](https://img.shields.io/badge/Next.js-16-black?logo=next.js)](https://nextjs.org)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org)
