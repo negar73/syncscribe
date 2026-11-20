@@ -4,19 +4,12 @@
 
 SyncScribe is a full-stack collaborative writing app: multiple users edit the same document at the same time, watch each other's cursors move live, and share documents with fine-grained OWNER / EDITOR / VIEWER roles — all backed by conflict-free CRDT merging and snapshot persistence in PostgreSQL.
 
----
-
-## Badges
-
 [![CI](https://github.com/negar73/syncscribe/actions/workflows/ci.yml/badge.svg)](https://github.com/negar73/syncscribe/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](./LICENSE)
-[![Next.js](https://img.shields.io/badge/Next.js-16-black?logo=next.js)](https://nextjs.org)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org)
-[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](./README.md#-roadmap)
 
 ---
 
-## ✨ Features
+## Features
 
 - **Real-time collaborative editing** — concurrent edits are merged with [Yjs](https://yjs.dev) CRDTs, so no central lock is needed and nobody can ever overwrite anybody. Every keystroke propagates to all connected clients in milliseconds.
 - **Live presence** — colored remote cursors, name labels and avatar stacks driven by the Yjs *awareness* protocol. Each user gets a deterministic color derived from their email at registration.
@@ -29,7 +22,7 @@ SyncScribe is a full-stack collaborative writing app: multiple users edit the sa
 - **Dark mode** — class-based light/dark toggle persisted in localStorage, applied by an inline script before hydration so there is no flash on load.
 - **Type-safe end to end** — Zod request validation, typed Prisma queries, typed API client, and strict TypeScript with `tsc --noEmit` + ESLint in CI.
 
-## 🏗️ Architecture
+## Architecture
 
 ```text
 ┌───────────────────────────── Browser ──────────────────────────────┐
@@ -81,7 +74,7 @@ SyncScribe is a full-stack collaborative writing app: multiple users edit the sa
 
 The session cookie is httpOnly, so the browser fetches its own JWT from `GET /api/auth/token` and passes it as `?token=` on the WebSocket upgrade — the only way to hand the separate ws process the same credentials. The WebSocket server and the Next.js API share one JWT module (`src/lib/jwt.ts`, issuer `syncscribe`, audience `syncscribe-app`) and one Prisma client.
 
-## 🧰 Tech stack
+## Tech stack
 
 | Layer | Technology |
 | --- | --- |
@@ -95,7 +88,7 @@ The session cookie is httpOnly, so the browser fetches its own JWT from `GET /ap
 | Database | PostgreSQL 16 via Prisma ORM 6, Zod request validation |
 | Infra / DX | Docker Compose (Postgres), multi-stage `Dockerfile` (standalone output), GitHub Actions CI, tsx for scripts |
 
-## 🚀 Getting started
+## Getting started
 
 Prerequisites: **Node.js ≥ 20**, **Docker** (for Postgres), and npm.
 
@@ -136,7 +129,7 @@ Open <http://localhost:3000>, sign in, and open the **Welcome to SyncScribe** do
 
 Other useful scripts: `npm run build`, `npm run start`, `npm run lint`, `npm run typecheck`, `npm run db:generate`. The seed script is idempotent, so re-running it is safe. A multi-stage `Dockerfile` builds a production image of the Next.js app (`docker build -t syncscribe .`).
 
-## 🔐 Environment variables
+## Environment variables
 
 Copied from `.env.example` — all of them live in `.env` (never committed).
 
@@ -147,7 +140,7 @@ Copied from `.env.example` — all of them live in `.env` (never committed).
 | `NEXT_PUBLIC_WS_URL` | `ws://localhost:1234` | URL the browser uses to reach the y-websocket server. `NEXT_PUBLIC_*` vars are inlined into the client bundle at build time. |
 | `WS_PORT` | `1234` | Port the standalone WebSocket server binds to (`server/ws-server.ts`, `npm run ws`). |
 
-## 📁 Project structure
+## Project structure
 
 ```text
 syncscribe/
@@ -192,7 +185,7 @@ syncscribe/
 └── package.json
 ```
 
-## 🗺️ Roadmap
+## Roadmap
 
 Ordered roughly from beginner-friendly to advanced — these are the next features planned:
 
@@ -206,6 +199,6 @@ Ordered roughly from beginner-friendly to advanced — these are the next featur
 
 Contributions welcome — pick a roadmap item and open a PR!
 
-## 📄 License
+## License
 
 Released under the [MIT License](./LICENSE) — © 2025 Negar Shojaei.
